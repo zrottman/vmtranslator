@@ -1,0 +1,4 @@
+// ignore test vm programs
+vm/
+
+*.py
