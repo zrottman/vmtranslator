@@ -5,6 +5,8 @@ int parser_translate(const char* vmfile) {
     // open file
     FILE *fp;
     char line[128];
+    char* token;
+    //enum CommandType command_type;
 
     fp = fopen(vmfile, "r");
     if (fp == NULL) {
@@ -14,14 +16,29 @@ int parser_translate(const char* vmfile) {
     
     int i=1;
     while (fgets(line, sizeof(line), fp) != NULL) {
+
+        // strip comments and trim leading/trailing space
         cleanline(line);
-        if (*line != '\0')
-            printf("%2d: %s\n", i++, line);
+
+        // skip blank lines
+        if (*line == '\0') { continue; }
+
+        // print vm line
+        //printf("%2d: %s\n", i++, line);
+
+        printf("%2d: ", i++);
+        token = strtok(line, " ");
+        //command_type = get_command_type(token);
+        while (token != NULL) {
+            printf("%s/", token);
+            token = strtok(NULL, " ");
+        }
+        printf("\n");
+        
     }
      
     // create code writer
     
-    // read each line
 
     // get command type
     
@@ -65,5 +82,4 @@ void trim(char* line) {
 
     line[++j] = '\0';
 }
-
 
