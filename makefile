@@ -9,15 +9,16 @@ BUILD_PATHS = $(PATHB) $(PATHO)
 COMPILE = cc -c
 LINK = cc
 
-SRC = $(wildcard $(PATHS)*.c)
-SRCT = $(wildcard $(PATHT)*.c)
+SRC = $(wildcard $(PATHS)*.c)  # src/main.c src/parser.c ...
+SRCT = $(wildcard $(PATHT)*.c) # test/test_utils.c test/test_parser.c ...
 
-OBJS = $(patsubst $(PATHS)%.c, $(PATHO)%.o, $(SRC))
-OBJT = $(patsubst $(PATHT)%.c, $(PATHO)%.o, $(SRCT))
+OBJS = $(patsubst $(PATHS)%.c, $(PATHO)%.o, $(SRC))  # build/objs/main.o build/objs/utils.o ...
+OBJT = $(patsubst $(PATHT)%.c, $(PATHO)%.o, $(SRCT)) # build/objs/test_utils.o build/objs/test_parser.o ...
+TESTS = $(patsubst $(PATHT)%.c, $(PATHB)%, $(SRCT))  # build/test_utils build/test_parser ...
 
 
 # Main program
-$(PATHB)$(OUTFILE) : $(BUILD_PATHS) $(OBJS) $(PATHB)test_utils
+$(PATHB)$(OUTFILE) : $(BUILD_PATHS) $(OBJS) $(PATHB) $(TESTS)
 	$(LINK) -o $@ $(OBJS) 
 
 $(PATHO)%.o :: $(PATHS)%.c
@@ -25,7 +26,7 @@ $(PATHO)%.o :: $(PATHS)%.c
 
 
 # Tests
-$(PATHB)test_utils : $(PATHO)test_utils.o $(PATHO)utils.o $(PATHO)unity.o
+$(PATHB)test_% : $(PATHO)test_%.o $(PATHO)%.o $(PATHO)unity.o
 	$(LINK) -o $@ $^
 
 $(PATHO)%.o :: $(PATHT)%.c
@@ -47,7 +48,7 @@ $(PATHO) :
 .PHONY : clean
 clean :
 	rm $(PATHB)$(OUTFILE)
-	rm $(PATHB)test_utils
+	rm $(TESTS)
 	rm $(PATHO)unity.o
 	rm $(OBJS)
 	rm $(OBJT)
