@@ -6,13 +6,13 @@ int main(int argc, char** argv) {
 
     char* ext;
 
-    // validate argc
+    // validate number args
     if (argc < 2) {
         printf("Usage: ./vmtranslator <source vm files>\n");
         exit(1);
     }
     
-    // validate file extensions
+    // validate arg file extensions
     for (int i=1; i<argc; ++i) {
         ext = rfind(argv[i], '.');
         if (ext == NULL || mystrcmp(ext, ".vm") != 0) {
@@ -21,9 +21,9 @@ int main(int argc, char** argv) {
         }
     }
 
-    // loop through argv files and translate each one
+    // loop through argv files and translate each
     for (int i=1; i<argc; ++i) {
-        // translate argv[i]
+        // translate(argv[i]);
     }
 
     return 0;
