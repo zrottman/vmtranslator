@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "utils.h"
+#include "parser.h"
 
 int main(int argc, char** argv) {
 
@@ -23,7 +24,9 @@ int main(int argc, char** argv) {
 
     // loop through argv files and translate each
     for (int i=1; i<argc; ++i) {
-        // translate(argv[i]);
+        if (parser_translate(argv[i]) != 0) {
+            break;
+        }
     }
 
     return 0;
