@@ -7,9 +7,12 @@
 // Returns:     Pointer to last location in `s` of `target`
 char* rfind(char* s, char target) {
     char *p = 0;
-    for (int i=0; s[i] != '\0'; ++i) {
-        if (s[i] == target) { p = s+i; }
+
+    while (target != 0 && s != 0 && *s != '\0') {
+        if (*s == target) { p = s; }
+        s++;
     }
+
     return p;
 }
 
@@ -20,8 +23,22 @@ char* rfind(char* s, char target) {
 //              s2 : string two
 // Returns:     0 if they are identical, else 1.
 int mystrcmp(const char* s1, const char* s2) {
-    for (int i=0; s1[i] != '\0' || s2[i] != '\0'; ++i) {
-        if (s1[i] != s2[i]) { return 1; }
+    // handle NULL pointers
+    if (s1 == 0 && s2 == 0) {
+        return 0; 
+    } else if (s1 == 0) {
+        return -1;
+    } else if (s2 == 0) {
+        return 1;
     }
+
+    while (*s1 != '\0' || *s2 != '\0') {
+        if (*s1 != *s2) {
+            return (*s1 > *s2) ? 1 : -1;
+        }
+        s1++;
+        s2++;
+    }
+
     return 0;
 }
