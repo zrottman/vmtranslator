@@ -36,3 +36,39 @@ int write_comment(const char* line, FILE* fp) {
 
     return 0;
 }
+
+int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* fp) {
+    switch (segment) {
+        case S_LOCAL:
+        case S_ARGUMENT:
+        case S_THIS:
+        case S_THAT:
+            if (command == C_PUSH) {
+                fprintf(fp, "@%s\n", idx);
+                fputs("D=A\n", fp);
+                fprintf(fp, "%s\n", (asm_seg_from_type(segment)));
+                fputs("A=D+M\n", fp);
+                fputs("D+M\n", fp);
+
+                // push
+                fputs("@SP\n", fp);
+                fputs("A=M\n", fp);
+                fputs("M=D\n", fp);
+                fputs("@SP\n", fp);
+                fputs("M=M+1\n", fp);
+            } else if (command == C_POP) {
+
+            }
+            break;
+        case S_POINTER:
+        case S_TEMP:
+            break;
+        case S_STATIC:
+            break;
+        case S_CONSTANT:
+            break;
+        case S_UNKNOWN:
+            break;
+    }
+    return 0;
+}

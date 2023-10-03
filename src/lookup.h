@@ -22,6 +22,7 @@ struct command_map {
 struct segment_map {
     const char*  key;
     enum Segment val;
+    const char*  asm_seg;
 } segment_map;
 
 /*
@@ -38,6 +39,7 @@ struct segment_map {
  */
 enum Command get_command_type(char* token);
 enum Segment get_segment_type(char* token);
+char* asm_seg_from_type(enum Segment type);
 
 
 

@@ -28,12 +28,12 @@ int parser_translate(const char* vmfile) {
         // skip blank lines
         if (*line == '\0') { continue; }
 
-        // print vm line
-         write_comment(line, fp_out);
-        printf("%2d: %s\n", i++, line);
+        // write vm line as comment
+        write_comment(line, fp_out);
+        //printf("%2d: %s\n", i++, line);
 
         // parse line
-        parse_line(line);
+        parse_line(line, fp_out);
     }
      
     // close code writer
@@ -79,7 +79,7 @@ void trim(char* line) {
     line[++j] = '\0';
 }
 
-void parse_line(char *line) {
+void parse_line(char *line, FILE* fp_out) {
 
     static size_t line_num = 1;
     size_t        token_count;
@@ -96,8 +96,7 @@ void parse_line(char *line) {
 
     switch (get_command_type(tokens[0])) {
         case C_PUSH:
-            printf("%2zu: push\n", line_num);
-            // write_pushpop(C_PUSH, tokens[1], tokens[2]);
+            write_pushpop(C_PUSH, get_segment_type(tokens[1]), tokens[2], fp_out);
             break;
         case C_POP:
             printf("%2zu: pop\n", line_num);

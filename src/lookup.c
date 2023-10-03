@@ -22,15 +22,15 @@ struct command_map commands[] = {
 };
 
 struct segment_map segments[] = {
-    {"argument", S_ARGUMENT},
-    {"local", S_LOCAL},
-    {"static", S_STATIC},
-    {"constant", S_CONSTANT},
-    {"this", S_THIS},
-    {"that", S_THAT},
-    {"pointer", S_POINTER},
-    {"temp", S_TEMP},
-    {NULL, S_UNKNOWN}
+    {"argument", S_ARGUMENT, "@ARG"},
+    {"local", S_LOCAL, "@LCL"},
+    {"static", S_STATIC, "@"},
+    {"constant", S_CONSTANT, NULL},
+    {"this", S_THIS, "@THIS"},
+    {"that", S_THAT, "@THAT"},
+    {"pointer", S_POINTER, "@3"},
+    {"temp", S_TEMP, "@5"},
+    {NULL, S_UNKNOWN, NULL}
 };
 
 enum Command get_command_type(char* token) {
@@ -49,4 +49,13 @@ enum Segment get_segment_type(char* token) {
         }
     }
     return S_UNKNOWN;
+}
+
+char* asm_seg_from_type(enum Segment type) {
+    for (int i=0; segments[i].val != S_UNKNOWN; ++i) {
+        if (segments[i].val == type) {
+            return segments[i].asm_seg;
+        }
+    }
+    return NULL;
 }
