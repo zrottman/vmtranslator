@@ -1,4 +1,4 @@
-// ignore test vm programs
 vm/
+build/
 
 *.py
