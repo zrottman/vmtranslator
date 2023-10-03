@@ -13,8 +13,8 @@ BUILD_PATHS = $(PATHB) $(PATHO) $(PATHR)
 COMPILE = cc -c
 LINK = cc
 
-SRC = $(wildcard $(PATHS)*.c)
-SRCT = $(wildcard $(PATHT)*.c)
+SRC = $(wildcard $(PATHS)*.c)  # src/main.c src/parser.c ...
+SRCT = $(wildcard $(PATHT)*.c) # test/test_utils.c test/test_parser.c ...
 
 OBJS = $(patsubst $(PATHS)%.c, $(PATHO)%.o, $(SRC))  # build/objs/main.o build/objs/utils.o ...
 #OBJT = $(patsubst $(PATHT)%.c, $(PATHO)%.o, $(SRCT)) # build/objs/test_utils.o build/objs/test_parser.o ...
@@ -69,7 +69,7 @@ $(PATHR) :
 # Cleanup: no need to rm $(OBJT) since these files are apparently intermediaries and auto-removed
 clean :
 	rm $(PATHB)$(OUTFILE)
-	rm $(PATHB)test_utils
+	rm $(TESTS)
 	rm $(PATHO)unity.o
 	rm $(OBJS)
 	rm $(RESULTS)
