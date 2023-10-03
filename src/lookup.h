@@ -37,7 +37,6 @@ struct segment_map {
  *
  */
 enum Command get_command_type(char* token);
-
 enum Segment get_segment_type(char* token);
 
 

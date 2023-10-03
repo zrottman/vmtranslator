@@ -1,6 +1,5 @@
 #include "lookup.h"
 
-
 struct command_map commands[] = {
     {"add", C_ARITHMETIC},
     {"sub", C_ARITHMETIC},
@@ -11,6 +10,14 @@ struct command_map commands[] = {
     {"and", C_ARITHMETIC},
     {"or", C_ARITHMETIC},
     {"not", C_ARITHMETIC},
+    {"push", C_PUSH},
+    {"pop", C_POP},
+    {"label", C_LABEL},
+    {"goto", C_GOTO},
+    {"if-goto", C_IF},
+    {"function", C_FUNCTION},
+    {"return", C_RETURN},
+    {"call", C_CALL},
     {NULL, C_UNKNOWN}
 };
 
