@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "lookup.h"
+#include "writer.h"
 
 int  parser_translate(const char* vmfile);
 void cleanline(char* line);

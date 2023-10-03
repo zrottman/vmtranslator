@@ -2,20 +2,24 @@
 
 int parser_translate(const char* vmfile) {
 
-    FILE* fp;
+    FILE* fp_in;
+    FILE *fp_out;
     char  line[128];
 
     // open file
-    fp = fopen(vmfile, "r");
-    if (fp == NULL) {
-        printf("File `%s` could not be opened or could not be found.\n", vmfile);
+    fp_in = fopen(vmfile, "r");
+    if (fp_in == NULL) {
+        printf("Input file `%s` could not be opened or could not be found.\n", vmfile);
         return 1; 
     }
     
-    // writer_init(vmfile)
+    // open write file
+    if (writer_init(vmfile, &fp_out) != 0) {
+        printf("Output file could not be created or opened for `%s`\n", vmfile);
+    }
     
     int i=1; // for line number printing -- to delete
-    while (fgets(line, sizeof(line), fp) != NULL) {
+    while (fgets(line, sizeof(line), fp_in) != NULL) {
 
 
         // strip comments and trim leading/trailing space
@@ -25,7 +29,7 @@ int parser_translate(const char* vmfile) {
         if (*line == '\0') { continue; }
 
         // print vm line
-        // write_comment(line);
+         write_comment(line, fp_out);
         printf("%2d: %s\n", i++, line);
 
         // parse line
@@ -33,10 +37,10 @@ int parser_translate(const char* vmfile) {
     }
      
     // close code writer
-    // writer_close()
+    writer_close(fp_out);
     
     // close file
-    fclose(fp);
+    fclose(fp_in);
 
     return 0;
 }
