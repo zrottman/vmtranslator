@@ -58,28 +58,54 @@ int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* f
                 fprintf(fp, "%s\n", (lookup_seg_type(segment)));
                 fputs("A=D+M\n", fp);
                 fputs("D+M\n", fp);
-
-                // push
                 fputs(PUSH, fp);
-                /*
-                fputs("@SP\n", fp);
-                fputs("A=M\n", fp);
-                fputs("M=D\n", fp);
-                fputs("@SP\n", fp);
-                fputs("M=M+1\n", fp);
-                */
             } else if (command == C_POP) {
-
+                fprintf(fp, "@%s\n", idx);
+                fputs("D=A\n", fp);
+                fprintf(fp, "%s\n", (lookup_seg_type(segment)));
+                fputs("D=D+M\n", fp);
+                fputs(POP, fp);
             }
             break;
         case S_POINTER:
         case S_TEMP:
+            if (command == C_PUSH) {
+                fprintf(fp, "@%s\n", idx);
+                fputs("D=A\n", fp);
+                fprintf(fp, "%s\n", (lookup_seg_type(segment)));
+                fputs("A=D+A\n", fp);
+                fputs("D+M\n", fp);
+                fputs(PUSH, fp);
+            } else if (command == C_POP) {
+                fprintf(fp, "@%s\n", idx);
+                fputs("D=A\n", fp);
+                fprintf(fp, "%s\n", (lookup_seg_type(segment)));
+                fputs("D=D+A\n", fp);
+                fputs(POP, fp);
+            }
             break;
         case S_STATIC:
+            if (command == C_PUSH) {
+                fprintf(fp, "%s\n", (lookup_seg_type(segment)));
+                fputs("D=M\n", fp);
+                fputs(PUSH, fp);
+            } else if (command == C_POP) {
+                fprintf(fp, "%s\n", (lookup_seg_type(segment)));
+                fputs("D=A\n", fp);
+                fputs(POP, fp);
+            }
             break;
         case S_CONSTANT:
+            if (command == C_PUSH) {
+                fprintf(fp, "@%s\n", idx);
+                fputs("D=A\n", fp);
+                fputs(PUSH, fp);
+            } else if (command == C_POP) {
+                // error
+            }
             break;
         case S_UNKNOWN:
+            // error
             break;
     }
     return 0;

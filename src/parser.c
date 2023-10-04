@@ -99,8 +99,7 @@ void parse_line(char *line, FILE* fp_out) {
             write_pushpop(C_PUSH, lookup_vm_segment(tokens[1]), tokens[2], fp_out);
             break;
         case C_POP:
-            printf("%2zu: pop\n", line_num);
-            // write_pushpop(C_POP, tokens[1], tokens[2]);
+            write_pushpop(C_POP, lookup_vm_segment(tokens[1]), tokens[2], fp_out);
             break;
         case C_ARITHMETIC:
             printf("%2zu: arithmetic\n", line_num);
