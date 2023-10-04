@@ -1,36 +1,36 @@
 #include "lookup.h"
 
 struct ArgMap commands[] = {
-    {"add",      COMMAND, {.c_type = C_ARITHMETIC}, NULL},
-    {"sub",      COMMAND, {.c_type = C_ARITHMETIC}, NULL},
-    {"neg",      COMMAND, {.c_type = C_ARITHMETIC}, NULL},
-    {"eq",       COMMAND, {.c_type = C_ARITHMETIC}, NULL},
-    {"gt",       COMMAND, {.c_type = C_ARITHMETIC}, NULL},
-    {"lt",       COMMAND, {.c_type = C_ARITHMETIC}, NULL},
-    {"and",      COMMAND, {.c_type = C_ARITHMETIC}, NULL},
-    {"or",       COMMAND, {.c_type = C_ARITHMETIC}, NULL},
-    {"not",      COMMAND, {.c_type = C_ARITHMETIC}, NULL},
-    {"push",     COMMAND, {.c_type = C_PUSH},       NULL},
-    {"pop",      COMMAND, {.c_type = C_POP},        NULL},
-    {"label",    COMMAND, {.c_type = C_LABEL},      NULL},
-    {"goto",     COMMAND, {.c_type = C_GOTO},       NULL},
-    {"if-goto",  COMMAND, {.c_type = C_IF},         NULL},
-    {"function", COMMAND, {.c_type = C_FUNCTION},   NULL},
-    {"return",   COMMAND, {.c_type = C_RETURN},     NULL},
-    {"call",     COMMAND, {.c_type = C_CALL},       NULL},
-    {NULL,       COMMAND, {.c_type = C_UNKNOWN},    NULL}
+    {"add",      COMMAND, {.c_type = C_ADD},      NULL},
+    {"sub",      COMMAND, {.c_type = C_SUB},      NULL},
+    {"neg",      COMMAND, {.c_type = C_NEG},      NULL},
+    {"eq",       COMMAND, {.c_type = C_EQ},       NULL},
+    {"gt",       COMMAND, {.c_type = C_GT},       NULL},
+    {"lt",       COMMAND, {.c_type = C_LT},       NULL},
+    {"and",      COMMAND, {.c_type = C_AND},      NULL},
+    {"or",       COMMAND, {.c_type = C_OR},       NULL},
+    {"not",      COMMAND, {.c_type = C_NOT},      NULL},
+    {"push",     COMMAND, {.c_type = C_PUSH},     NULL},
+    {"pop",      COMMAND, {.c_type = C_POP},      NULL},
+    {"label",    COMMAND, {.c_type = C_LABEL},    NULL},
+    {"goto",     COMMAND, {.c_type = C_GOTO},     NULL},
+    {"if-goto",  COMMAND, {.c_type = C_IF},       NULL},
+    {"function", COMMAND, {.c_type = C_FUNCTION}, NULL},
+    {"return",   COMMAND, {.c_type = C_RETURN},   NULL},
+    {"call",     COMMAND, {.c_type = C_CALL},     NULL},
+    {NULL,       COMMAND, {.c_type = C_UNKNOWN},  NULL}
 };
 
 struct ArgMap segments[] = {
-    {"argument", SEGMENT, {.s_type = S_ARGUMENT},   "@ARG"},
-    {"local",    SEGMENT, {.s_type = S_LOCAL},      "@LCL"},
-    {"static",   SEGMENT, {.s_type = S_STATIC},     "@"},
-    {"constant", SEGMENT, {.s_type = S_CONSTANT},   NULL},
-    {"this",     SEGMENT, {.s_type = S_THIS},       "@THIS"},
-    {"that",     SEGMENT, {.s_type = S_THAT},       "@THAT"},
-    {"pointer",  SEGMENT, {.s_type = S_POINTER},    "@3"},
-    {"temp",     SEGMENT, {.s_type = S_TEMP},       "@5"},
-    {NULL,       SEGMENT, {.s_type = S_UNKNOWN},    NULL}
+    {"argument", SEGMENT, {.s_type = S_ARGUMENT}, "@ARG"},
+    {"local",    SEGMENT, {.s_type = S_LOCAL},    "@LCL"},
+    {"static",   SEGMENT, {.s_type = S_STATIC},   "@"},
+    {"constant", SEGMENT, {.s_type = S_CONSTANT}, NULL},
+    {"this",     SEGMENT, {.s_type = S_THIS},     "@THIS"},
+    {"that",     SEGMENT, {.s_type = S_THAT},     "@THAT"},
+    {"pointer",  SEGMENT, {.s_type = S_POINTER},  "@3"},
+    {"temp",     SEGMENT, {.s_type = S_TEMP},     "@5"},
+    {NULL,       SEGMENT, {.s_type = S_UNKNOWN},  NULL}
 };
 
 enum Command lookup_vm_command(char* token) {

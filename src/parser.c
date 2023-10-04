@@ -101,9 +101,16 @@ void parse_line(char *line, FILE* fp_out) {
         case C_POP:
             write_pushpop(C_POP, lookup_vm_segment(tokens[1]), tokens[2], fp_out);
             break;
-        case C_ARITHMETIC:
-            printf("%2zu: arithmetic\n", line_num);
-            // write_arithmetic(tokens[0]);
+        case C_ADD:
+        case C_SUB:
+        case C_NEG:
+        case C_EQ:
+        case C_GT:
+        case C_LT:
+        case C_AND:
+        case C_OR:
+        case C_NOT:
+            write_arithmetic(lookup_vm_command(tokens[0]);
             break;
         case C_LABEL:
             printf("%2zu: label\n", line_num);
