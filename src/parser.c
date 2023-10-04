@@ -94,9 +94,9 @@ void parse_line(char *line, FILE* fp_out) {
         token = strtok(NULL, " ");
     }
 
-    switch (get_command_type(tokens[0])) {
+    switch (lookup_vm_command(tokens[0])) {
         case C_PUSH:
-            write_pushpop(C_PUSH, get_segment_type(tokens[1]), tokens[2], fp_out);
+            write_pushpop(C_PUSH, lookup_vm_segment(tokens[1]), tokens[2], fp_out);
             break;
         case C_POP:
             printf("%2zu: pop\n", line_num);

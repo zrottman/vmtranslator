@@ -1,8 +1,10 @@
-#ifndef LINKEDLIST_H
-#define LINKEDLIST_H
+#ifndef LOOKUP_H
+#define LOOKUP_H
 
 #include <stdio.h>
 #include <string.h>
+
+enum ArgType { COMMAND, SEGMENT};
 
 enum Segment {
     S_ARGUMENT, S_LOCAL, S_STATIC, S_CONSTANT, 
@@ -14,16 +16,19 @@ enum Command {
     C_FUNCTION, C_RETURN, C_CALL, C_UNKNOWN
 };
 
-struct command_map {
-    const char*  key;
-    enum Command val;
-} command_map;
+union ComOrSeg {
+    enum Segment s_type;
+    enum Command c_type;
+};
 
-struct segment_map {
-    const char*  key;
-    enum Segment val;
-    const char*  asm_seg;
-} segment_map;
+struct ArgMap {
+    const char*    vm_token;
+    enum ArgType   arg_type;
+    union ComOrSeg com_or_seg;
+    const char*    asm_token;
+};
+
+enum SearchOn { VM_TOK, ASM_TOK, COM_OR_SEG };
 
 /*
  * commands:
@@ -37,11 +42,14 @@ struct segment_map {
  *  return
  *
  */
-enum Command get_command_type(char* token);
-enum Segment get_segment_type(char* token);
-char* asm_seg_from_type(enum Segment type);
+//char* asm_seg_from_type(enum Segment type);
 
 
+//struct ArgMap lookup_vm_token(char* token, struct ArgMap *map);
+enum Command  lookup_vm_command(char* token);
+enum Segment  lookup_vm_segment(char* token);
+struct ArgMap lookup(struct ArgMap target, struct ArgMap *source, enum SearchOn search_on);
+const char* lookup_seg_type(enum Segment seg_type);
 
 
-#endif // LINKEDLIST_H
+#endif // LOOKUP_H
