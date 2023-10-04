@@ -1,5 +1,13 @@
 #include "writer.h"
 
+#define INC         "@SP\nM=M+1\n"
+#define DEC         "@SP\nM=M-1\n"
+#define PUSH        "@SP\nA=M\nM=D\n" INC
+#define POP         "@R13\nM=D\n" DEC "A=M\nD=M\n@R13\nA=M\nM=D\n"
+#define UNARY_LOAD  DEC "A=M\n"
+#define BINARY_LOAD UNARY_LOAD "D=M\n" UNARY_LOAD
+
+
 int writer_init(const char* vmfilename, FILE** fp) {
     size_t len;
     char*  asmfilename;
@@ -52,11 +60,14 @@ int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* f
                 fputs("D+M\n", fp);
 
                 // push
+                fputs(PUSH, fp);
+                /*
                 fputs("@SP\n", fp);
                 fputs("A=M\n", fp);
                 fputs("M=D\n", fp);
                 fputs("@SP\n", fp);
                 fputs("M=M+1\n", fp);
+                */
             } else if (command == C_POP) {
 
             }
