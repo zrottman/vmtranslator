@@ -33,21 +33,6 @@ struct ArgMap segments[] = {
     {NULL,       SEGMENT, {.s_type = S_UNKNOWN},    NULL}
 };
 
-/*
-struct ArgMap lookup_vm_token(char* token, struct ArgMap *map) {
-    size_t i;
-
-    for (i=0; map[i].vm_token != NULL; ++i) {
-        if (strcmp(token, map[i].vm_token) == 0) {
-            return map[i];
-        }
-    }
-
-    // if not found, return "uknown" mapping
-    return map[i];
-}
-*/
-
 enum Command lookup_vm_command(char* token) {
     struct ArgMap target = {.vm_token = token};
     struct ArgMap res = lookup(target, commands, VM_TOK);
@@ -58,6 +43,13 @@ enum Segment lookup_vm_segment(char* token) {
     struct ArgMap target = {.vm_token = token};
     struct ArgMap res = lookup(target, segments, VM_TOK);
     return res.com_or_seg.s_type;
+}
+
+const char* lookup_seg_type(enum Segment seg_type) {
+    struct ArgMap target = {.arg_type= SEGMENT, .com_or_seg.s_type = seg_type};
+    struct ArgMap res = lookup(target, segments, COM_OR_SEG);
+    return res.asm_token;
+
 }
 
 struct ArgMap lookup(struct ArgMap target, struct ArgMap *source, enum SearchOn search_on) {
@@ -88,47 +80,3 @@ struct ArgMap lookup(struct ArgMap target, struct ArgMap *source, enum SearchOn 
     // if not found, return "uknown" mapping
     return source[i];
 }
-
-const char* lookup_seg_type(enum Segment seg_type) {
-    struct ArgMap target = {.arg_type= SEGMENT, .com_or_seg.s_type = seg_type};
-    struct ArgMap res = lookup(target, segments, COM_OR_SEG);
-    return res.asm_token;
-
-}
-/*
-struct ArgMap lookup_arg(struct ArgMap arg) {
-    struct ArgMap *map = arg.arg_type == COMMAND ? commands : segments;
-    size_t i;
-
-    for (i=0; map[i].vm_token != NULL; ++i) {
-        switch (arg.arg_type) {
-            case COMMAND:
-                if (arg.com_or_seg.c_type == map.com_or_seg.c_type) {
-                    return map[i].asm_token;
-                }
-                break;
-            case SEGMENT:
-                if (arg.com_or_seg.c_type == map.com_or_seg.c_type) {
-                    return map[i].asm_token;
-                }
-                break
-        }
-        if (strcmp(token, map[i].vm_token) == 0) {
-            return map[i];
-        }
-    }
-
-    // if not found, return "uknown" mapping
-    return map[i];
-
-}
-
-char* asm_seg_from_type(enum Segment type) {
-    for (int i=0; segments[i].s_type != S_UNKNOWN; ++i) {
-        if (segments[i].s_type == type) {
-            return segments[i].seg_asm;
-        }
-    }
-    return NULL;
-}
-*/

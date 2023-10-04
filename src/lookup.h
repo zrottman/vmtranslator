@@ -42,14 +42,11 @@ enum SearchOn { VM_TOK, ASM_TOK, COM_OR_SEG };
  *  return
  *
  */
-//char* asm_seg_from_type(enum Segment type);
 
-
-//struct ArgMap lookup_vm_token(char* token, struct ArgMap *map);
-enum Command  lookup_vm_command(char* token);
-enum Segment  lookup_vm_segment(char* token);
 struct ArgMap lookup(struct ArgMap target, struct ArgMap *source, enum SearchOn search_on);
-const char* lookup_seg_type(enum Segment seg_type);
 
+enum Command lookup_vm_command(char* token);
+enum Segment lookup_vm_segment(char* token);
+const char*  lookup_seg_type(enum Segment seg_type);
 
 #endif // LOOKUP_H
