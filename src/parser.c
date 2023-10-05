@@ -1,9 +1,8 @@
 #include "parser.h"
 
-int parser_translate(const char* vmfile) {
+int parser_translate(const char* vmfile, FILE* fp_out) {
 
     FILE* fp_in;
-    FILE *fp_out;
     char  line[128];
 
     // open file
@@ -11,11 +10,6 @@ int parser_translate(const char* vmfile) {
     if (fp_in == NULL) {
         printf("Input file `%s` could not be opened or could not be found.\n", vmfile);
         return 1; 
-    }
-    
-    // open write file
-    if (writer_init(vmfile, &fp_out) != 0) {
-        printf("Output file could not be created or opened for `%s`\n", vmfile);
     }
     
     int i=1; // for line number printing -- to delete
@@ -36,9 +30,6 @@ int parser_translate(const char* vmfile) {
         parse_line(line, fp_out);
     }
      
-    // close code writer
-    writer_close(fp_out);
-    
     // close file
     fclose(fp_in);
 

@@ -8,8 +8,9 @@
 #define BINARY_LOAD UNARY_LOAD "D=M\n" UNARY_LOAD
 
 
-int writer_init(const char* vmfilename, FILE** fp) {
+int writer_init(const char* asmfilename, FILE** fp) {
     size_t len;
+    /*
     char*  asmfilename;
     char*  p;
  
@@ -21,7 +22,7 @@ int writer_init(const char* vmfilename, FILE** fp) {
     
     p = rfind(asmfilename, '.');
     strcpy(p, ".asm\0");
-
+    */
 
     printf("Write file: %s\n", asmfilename);
 
