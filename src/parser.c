@@ -85,6 +85,7 @@ void parse_line(char *line, FILE* fp_out) {
     size_t        token_count;
     char*         token;
     char*         tokens[3];
+    static size_t uid = 0; // unique ID for labels/jumps, ideally would reset to 0 for each .vm file
 
     // parse three tokens
     token_count = 0;
@@ -110,7 +111,7 @@ void parse_line(char *line, FILE* fp_out) {
         case C_AND:
         case C_OR:
         case C_NOT:
-            write_arithmetic(lookup_vm_command(tokens[0]);
+            write_arithmetic(lookup_vm_command(tokens[0]), uid++, fp_out);
             break;
         case C_LABEL:
             printf("%2zu: label\n", line_num);

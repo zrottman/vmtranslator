@@ -117,47 +117,77 @@ int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* f
     return 0;
 }
 
-int write_arithmetic(enum Command command, FILE* fp) {
+int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
     switch (command) {
 
-        case NEG:
-        case NOT:
+        case C_NEG:
+        case C_NOT:
             fputs(UNARY_LOAD, fp);
             switch (command) {
-                case NEG:
+                case C_NEG:
                     fputs("M=-M\n", fp);
                     break;
-                case NOT:
+                case C_NOT:
                     fputs("M=!M\n", fp);
                     break;
             }
             fputs(INC, fp);
             break;
 
-        case ADD;
-        case SUB;
-        case AND;
-        case OR;
+        case C_ADD:
+        case C_SUB:
+        case C_AND:
+        case C_OR:
             fputs(BINARY_LOAD, fp);
             switch (command) {
-                case ADD:
-                    fputs("M=D+M\n");
+                case C_ADD:
+                    fputs("M=D+M\n", fp);
                     break;
-                case SUB:
-                    fputs("M=D-M\n");
+                case C_SUB:
+                    fputs("M=D-M\n", fp);
                     break;
-                case AND:
-                    fputs("M=D&M\n");
+                case C_AND:
+                    fputs("M=D&M\n", fp);
                     break;
-                case OR:
-                    fputs("M=D|M\n");
+                case C_OR:
+                    fputs("M=D|M\n", fp);
                     break;
             }
             fputs(INC, fp);
             break;
-        case EQ;
-        case GT;
-        case LT;
+        case C_EQ:
+        case C_GT:
+        case C_LT:
+            fputs(BINARY_LOAD, fp);
+            fputs("D=D-M\n", fp);
+            //fprintf(fp, "@TRUE.%s$%s\n", ); // file id and counter
+            fprintf(fp, "@TRUE.%zu\n", uid); // file id also required if UID is reset to 0 each time parser_translate is called
+
+            switch (command) {
+                case C_EQ:
+                    fputs("D;JEQ\n", fp);
+                    break;
+                case C_GT:
+                    fputs("D;JLT\n", fp);
+                    break;
+                case C_LT:
+                    fputs("D;JGT\n", fp);
+                    break;
+            }
+            fputs("D=0\n", fp);
+            //fprintf(fp, "@ENDIF.%s$%s\n", ); // file id and counter
+            fprintf(fp, "@ENDIF.%zu\n", uid); // file id also required if UID is reset to 0 each time parser_translate is called
+
+            fputs("0;JMP\n", fp);
+            //fprintf(fp, "(TRUE.%s$%s)\n", ); // file id and counter
+            fprintf(fp, "(TRUE.%zu)\n", uid); // file id also required if UID is reset to 0 each time parser_translate is called
+            fputs("D=-1\n", fp);
+            //fprintf(fp, "(ENDIF.%s$%s)\n", ); // file id and counter
+            fprintf(fp, "(ENDIF.%zu)\n", uid); // file id also required if UID is reset to 0 each time parser_translate is called
+            fputs("@SP\n", fp);
+            fputs("A=M\n", fp);
+            fputs("M=D\n", fp);
+            fputs(INC, fp);
             break;
             
     }
