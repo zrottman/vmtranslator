@@ -11,7 +11,7 @@ void tearDown(void)
 
 void test_lookup_vm_command(void)
 {
-    TEST_ASSERT_EQUAL(C_ARITHMETIC, lookup_vm_command("add"));
+    TEST_ASSERT_EQUAL(C_ADD, lookup_vm_command("add"));
     TEST_ASSERT_EQUAL(C_PUSH, lookup_vm_command("push"));
     TEST_ASSERT_EQUAL(C_IF, lookup_vm_command("if-goto"));
     TEST_ASSERT_EQUAL(C_UNKNOWN, lookup_vm_command("non-existent command"));
