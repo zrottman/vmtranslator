@@ -67,6 +67,8 @@ int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* f
                     fputs("D=D+M\n", fp);
                     fputs(POP, fp);
                     break;
+                default:
+                    break;
             }
             break;
 
@@ -85,6 +87,8 @@ int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* f
                     fputs("D=D+A\n", fp);
                     fputs(POP, fp);
                     break;
+                default:
+                    break;
             }
             break;
 
@@ -99,6 +103,8 @@ int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* f
                     fputs("D=A\n", fp);
                     fputs(POP, fp);
                     break;
+                default:
+                    break;
             }
             break;
 
@@ -112,6 +118,7 @@ int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* f
             break;
 
         case S_UNKNOWN:
+        default:
             // error
             break;
     }
@@ -130,6 +137,8 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
                     break;
                 case C_NOT:
                     fputs("M=!M\n", fp);
+                    break;
+                default:
                     break;
             }
             fputs(INC, fp);
@@ -153,6 +162,8 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
                 case C_OR:
                     fputs("M=D|M\n", fp);
                     break;
+                default:
+                    break;
             }
             fputs(INC, fp);
             break;
@@ -174,6 +185,8 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
                 case C_LT:
                     fputs("D;JGT\n", fp);
                     break;
+                default:
+                    break;
             }
             fputs("D=0\n", fp);
             //fprintf(fp, "@ENDIF.%s$%s\n", ); // file id and counter
@@ -189,6 +202,8 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
             fputs("A=M\n", fp);
             fputs("M=D\n", fp);
             fputs(INC, fp);
+            break;
+        default:
             break;
             
     }
