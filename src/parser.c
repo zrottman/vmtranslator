@@ -130,8 +130,10 @@ int parse_line(char *line, FILE* fp_out) {
             }
             break;
         case C_GOTO:
-            printf("%2zu: goto\n", line_num);
-            // write_goto(tokens[1]);
+            if (write_goto(tokens[1], fp_out) != 0) {
+                // error
+                return 6;
+            }
             break;
         case C_FUNCTION:
             printf("%2zu: function\n", line_num);

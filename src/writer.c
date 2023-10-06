@@ -224,3 +224,9 @@ int write_if(char* label, FILE* fp) {
     fputs("D;JNE\n", fp);
     return 0;
 }
+
+int write_goto(char* label, FILE* fp) {
+    fprintf(fp, "@%s\n", label);
+    fputs("0;JMP\n", fp);
+    return 0;
+}
