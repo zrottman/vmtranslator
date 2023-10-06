@@ -26,8 +26,15 @@ int writer_init(const char* asmfilename, FILE** fp) {
 
     printf("Write file: %s\n", asmfilename);
 
+    // open file
     if ((*fp = fopen(asmfilename, "w")) == NULL) {
         return 1;
+    }
+
+    // write bootstrap
+    if (write_bootstrap(*fp) != 0) {
+        writer_close(*fp);
+        return 2;
     }
     return 0;
 }
@@ -46,6 +53,19 @@ int write_comment(const char* line, FILE* fp) {
     return 0;
 }
 
+int write_bootstrap(FILE *fp) {
+    if (write_comment("Start Bootstrap", fp) != 0) {
+        return 1;
+    }
+    fputs("@256\n", fp);
+    fputs("D=A\n", fp);
+    fputs("@SP\n", fp);
+    fputs("M=D\n", fp);
+    if (write_call("Sys.init", "0", fp) != 0) {
+        return 2;
+    }
+    return 0;
+}
 
 int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* fp) {
     switch (segment) {
@@ -228,5 +248,23 @@ int write_if(char* label, FILE* fp) {
 int write_goto(char* label, FILE* fp) {
     fprintf(fp, "@%s\n", label);
     fputs("0;JMP\n", fp);
+    return 0;
+}
+
+int write_function(char* label, char* n_locals, FILE* fp) {
+    int n;
+    if (write_label(label, fp) != 0) {
+        return 1;
+    }
+    n = atoi(n_locals);
+    for (int i=0; i<n; ++i) {
+        if (write_pushpop(C_PUSH, S_CONSTANT, "0", fp) != 0) {
+            return 2;
+        }
+    }
+    return 0;
+}
+
+int write_call(char* f_name, char* n_args, FILE* fp) {
     return 0;
 }

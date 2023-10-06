@@ -136,8 +136,10 @@ int parse_line(char *line, FILE* fp_out) {
             }
             break;
         case C_FUNCTION:
-            printf("%2zu: function\n", line_num);
-            // write_function(tokens[1], tokens[2]);
+            if (write_function(tokens[1], tokens[2], fp_out) != 0) {
+                // error
+                return 7;
+            }
             break;
         case C_CALL:
             printf("%2zu: call\n", line_num);
