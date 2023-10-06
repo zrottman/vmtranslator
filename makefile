@@ -6,6 +6,7 @@ PATHT = test/
 
 .PHONY : test
 .PHONY : clean
+.PHONY : translate
 
 OUTFILE = vmtranslator
 BUILD_PATHS = $(PATHB) $(PATHO) $(PATHR)
@@ -65,6 +66,50 @@ $(PATHO) :
 $(PATHR) :
 	mkdir -p $(PATHR)
 
+# Assembler sample .vm projects
+VM_DIR = vm # vm
+VM_DIR_CONTENTS = $(shell find $(VM_DIR) -maxdepth 1 -type d) # vm vm/BasicLoop vm/FibonacciElements ...
+VM_PROJ_DIRS = $(filter-out $(VM_DIR), $(VM_DIR_CONTENTS)) # vm/BasicLoop vm/FibonacciElements ...
+ASM_TARGETS = $(join $(addsuffix /, $(VM_PROJ_DIRS)), $(addsuffix .asm, $(notdir $(VM_PROJ_DIRS))))
+
+#VM_PROJ_PATH = $(addsuffix /, $(filter-out $(VM_DIR), $(VM_DIR_CONTENTS)))  # vm/BasicLoop/ vm/FibonacciElements/ ...
+#ASM_TARGETS = $(addsuffix /out.asm, $(VM_PROJ_DIRS))
+#PROJS = $(notdir $(VM_PROJ_DIRS))
+#ASM_TARGETS = $(patsubst %/, %/$(notdir %).asm, $(dir $(wildcard vm/*/)))
+
+
+#define generate_asm =
+#$(1) : $(wildcard $(dir $(1))*.vm)
+#endef
+
+#VM_FILES = $(foreach asm_target, $(ASM_TARGETS), $(wildcard $(dir $(asm_target))*.vm))
+#$(foreach asm_target, $(ASM_TARGETS), $(eval $(call generate_asm, $(asm_target))))
+
+#get_vm_files = $(shell find vm/$(1) -type f -maxdepth 1 -name *.vm)
+
+#$(ASM_TARGETS) :
+	#@echo "$@ -> $^\n"
+
+translate : $(ASM_TARGETS)
+
+vm/BasicLoop/BasicLoop.asm : vm/BasicLoop/BasicLoop.vm
+	-./$(PATHB)$(OUTFILE) $@ $^
+
+vm/StaticsTest/StaticsTest.asm : vm/StaticsTest/Class1.vm vm/StaticsTest/Class2.vm vm/StaticsTest/Sys.vm
+	-./$(PATHB)$(OUTFILE) $@ $^
+
+vm/SimpleFunction/SimpleFunction.asm : vm/SimpleFunction/SimpleFunction.vm
+	-./$(PATHB)$(OUTFILE) $@ $^
+
+vm/FibonacciSeries/FibonacciSeries.asm : vm/FibonacciSeries/FibonacciSeries.vm
+	-./$(PATHB)$(OUTFILE) $@ $^
+
+vm/FibonacciElement/FibonacciElement.asm : vm/FibonacciElement/Main.vm vm/FibonacciElement/Sys.vm
+	-./$(PATHB)$(OUTFILE) $@ $^
+
+vm/NestedCall/NestedCall.asm : vm/NestedCall/Sys.vm
+	-./$(PATHB)$(OUTFILE) $@ $^
+	
 
 # Cleanup: no need to rm $(OBJT) since these files are apparently intermediaries and auto-removed
 clean :
@@ -73,3 +118,4 @@ clean :
 	rm $(PATHO)unity.o
 	rm $(OBJS)
 	rm $(RESULTS)
+	rm $(ASM_TARGETS)
