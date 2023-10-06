@@ -210,8 +210,17 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
     return 0;
 }
 
-int write_label(char* label, size_t uid, FILE* fp) {
+int write_label(char* label, FILE* fp) {
     // is this correct? Do I need to disambuguate the label, for instance with the counter?
-    fprintf(fp, "(%s.%zu)\n", label, uid);
+    fprintf(fp, "(%s)\n", label);
+    return 0;
+}
+
+int write_if(char* label, FILE* fp) {
+    fputs(DEC, fp);
+    fputs("A=M\n", fp);
+    fputs("D=M\n", fp);
+    fprintf(fp, "@%s\n", label);
+    fputs("D;JNE\n", fp);
     return 0;
 }

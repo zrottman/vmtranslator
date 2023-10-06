@@ -118,14 +118,16 @@ int parse_line(char *line, FILE* fp_out) {
             }
             break;
         case C_LABEL:
-            if (write_label(tokens[1], uid++, fp_out) != 0) {
+            if (write_label(tokens[1], fp_out) != 0) {
                 //error;
                 return 4;
             }
             break;
         case C_IF:
-            printf("%2zu: if\n", line_num);
-            // write_if(tokens[1]);
+            if (write_if(tokens[1], fp_out) != 0) {
+                //error
+                return 5;
+            }
             break;
         case C_GOTO:
             printf("%2zu: goto\n", line_num);
