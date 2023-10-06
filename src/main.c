@@ -35,6 +35,7 @@ int main(int argc, char** argv) {
     // loop through argv files and translate each
     for (int i=2; i<argc; ++i) {
         if (parser_translate(argv[i], fp_out) != 0) {
+            // error
             break;
         }
     }

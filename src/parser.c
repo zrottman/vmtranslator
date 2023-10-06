@@ -27,7 +27,11 @@ int parser_translate(const char* vmfile, FILE* fp_out) {
         //printf("%2d: %s\n", i++, line);
 
         // parse line
-        parse_line(line, fp_out);
+        if (parse_line(line, fp_out) != 0) {
+            printf("Error parsing line `%s` from file `%s`\n", line, vmfile);
+            fclose(fp_in);
+            return 1;
+        }
     }
      
     // close file
@@ -70,7 +74,7 @@ void trim(char* line) {
     line[++j] = '\0';
 }
 
-void parse_line(char *line, FILE* fp_out) {
+int parse_line(char *line, FILE* fp_out) {
 
     static size_t line_num = 1;
     size_t        token_count;
@@ -88,10 +92,16 @@ void parse_line(char *line, FILE* fp_out) {
 
     switch (lookup_vm_command(tokens[0])) {
         case C_PUSH:
-            write_pushpop(C_PUSH, lookup_vm_segment(tokens[1]), tokens[2], fp_out);
+            if (write_pushpop(C_PUSH, lookup_vm_segment(tokens[1]), tokens[2], fp_out) != 0) {
+                // error;
+                return 1;
+            }
             break;
         case C_POP:
-            write_pushpop(C_POP, lookup_vm_segment(tokens[1]), tokens[2], fp_out);
+            if (write_pushpop(C_POP, lookup_vm_segment(tokens[1]), tokens[2], fp_out) != 0) {
+                // error;
+                return 2;
+            }
             break;
         case C_ADD:
         case C_SUB:
@@ -102,11 +112,16 @@ void parse_line(char *line, FILE* fp_out) {
         case C_AND:
         case C_OR:
         case C_NOT:
-            write_arithmetic(lookup_vm_command(tokens[0]), uid++, fp_out);
+            if (write_arithmetic(lookup_vm_command(tokens[0]), uid++, fp_out) != 0) {
+                // error;
+                return 3;
+            }
             break;
         case C_LABEL:
-            printf("%2zu: label\n", line_num);
-            // write_label(tokens[1]);
+            if (write_label(tokens[1], fp_out) != 0) {
+                //error;
+                return 4;
+            }
             break;
         case C_IF:
             printf("%2zu: if\n", line_num);
@@ -134,4 +149,6 @@ void parse_line(char *line, FILE* fp_out) {
     }
 
     line_num++;
+
+    return 0;
 }

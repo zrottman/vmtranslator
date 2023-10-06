@@ -68,10 +68,10 @@ int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* f
                     fputs(POP, fp);
                     break;
                 default:
+                    return 1;
                     break;
             }
             break;
-
         case S_POINTER:
         case S_TEMP:
             fprintf(fp, "@%s\n", idx);
@@ -88,10 +88,10 @@ int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* f
                     fputs(POP, fp);
                     break;
                 default:
+                    return 2;
                     break;
             }
             break;
-
         case S_STATIC:
             fprintf(fp, "%s\n", (lookup_seg_type(segment)));
             switch (command) {
@@ -104,22 +104,23 @@ int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* f
                     fputs(POP, fp);
                     break;
                 default:
+                    return 3;
                     break;
             }
             break;
-
         case S_CONSTANT:
             if (command != C_PUSH) {
                 // error
+                return 4;
             }
             fprintf(fp, "@%s\n", idx);
             fputs("D=A\n", fp);
             fputs(PUSH, fp);
             break;
-
         case S_UNKNOWN:
         default:
             // error
+            return 5;
             break;
     }
     return 0;
@@ -127,7 +128,6 @@ int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* f
 
 int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
     switch (command) {
-
         case C_NEG:
         case C_NOT:
             fputs(UNARY_LOAD, fp);
@@ -139,11 +139,11 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
                     fputs("M=!M\n", fp);
                     break;
                 default:
+                    return 1;
                     break;
             }
             fputs(INC, fp);
             break;
-
         case C_ADD:
         case C_SUB:
         case C_AND:
@@ -163,6 +163,7 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
                     fputs("M=D|M\n", fp);
                     break;
                 default:
+                    return 2;
                     break;
             }
             fputs(INC, fp);
@@ -174,7 +175,6 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
             fputs("D=D-M\n", fp);
             //fprintf(fp, "@TRUE.%s$%s\n", ); // file id and counter
             fprintf(fp, "@TRUE.%zu\n", uid); // file id also required if UID is reset to 0 each time parser_translate is called
-
             switch (command) {
                 case C_EQ:
                     fputs("D;JEQ\n", fp);
@@ -186,12 +186,12 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
                     fputs("D;JGT\n", fp);
                     break;
                 default:
+                    return 3;
                     break;
             }
             fputs("D=0\n", fp);
             //fprintf(fp, "@ENDIF.%s$%s\n", ); // file id and counter
             fprintf(fp, "@ENDIF.%zu\n", uid); // file id also required if UID is reset to 0 each time parser_translate is called
-
             fputs("0;JMP\n", fp);
             //fprintf(fp, "(TRUE.%s$%s)\n", ); // file id and counter
             fprintf(fp, "(TRUE.%zu)\n", uid); // file id also required if UID is reset to 0 each time parser_translate is called
@@ -204,8 +204,11 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
             fputs(INC, fp);
             break;
         default:
+            return 4;
             break;
-            
     }
     return 0;
 }
+
+int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* fp) {
+int write_label(char* 

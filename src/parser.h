@@ -9,6 +9,6 @@
 int  parser_translate(const char* vmfile, FILE* fp_out);
 void cleanline(char* line);
 void trim(char* line);
-void parse_line(char* line, FILE* fp_out);
+int parse_line(char* line, FILE* fp_out);
 
 #endif // PARSER_H
