@@ -210,5 +210,8 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
     return 0;
 }
 
-int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* fp) {
-int write_label(char* 
+int write_label(char* label, size_t uid, FILE* fp) {
+    // is this correct? Do I need to disambuguate the label, for instance with the counter?
+    fprintf(fp, "(%s.%zu)\n", label, uid);
+    return 0;
+}

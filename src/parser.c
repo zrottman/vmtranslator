@@ -118,7 +118,7 @@ int parse_line(char *line, FILE* fp_out) {
             }
             break;
         case C_LABEL:
-            if (write_label(tokens[1], fp_out) != 0) {
+            if (write_label(tokens[1], uid++, fp_out) != 0) {
                 //error;
                 return 4;
             }
