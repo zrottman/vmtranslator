@@ -10,19 +10,6 @@
 
 int writer_init(const char* asmfilename, FILE** fp) {
     size_t len;
-    /*
-    char*  asmfilename;
-    char*  p;
- 
-    len = strlen(vmfilename);
-    asmfilename = (char*)malloc(len * sizeof(char) + 1);
-    strcpy(asmfilename, vmfilename);
-
-    p = NULL;
-    
-    p = rfind(asmfilename, '.');
-    strcpy(p, ".asm\0");
-    */
 
     printf("Write file: %s\n", asmfilename);
 
@@ -61,7 +48,7 @@ int write_bootstrap(FILE *fp) {
     fputs("D=A\n", fp);
     fputs("@SP\n", fp);
     fputs("M=D\n", fp);
-    if (write_call("Sys.init", "0", fp) != 0) {
+    if (write_call("Sys.init", "0", 0, fp) != 0) {
         return 2;
     }
     return 0;
@@ -265,6 +252,144 @@ int write_function(char* label, char* n_locals, FILE* fp) {
     return 0;
 }
 
-int write_call(char* f_name, char* n_args, FILE* fp) {
+int write_call(char* f_name, char* n_args, size_t uid, FILE* fp) {
+    char *ret_label;
+    int i;
+    
+    // allocate arbitrary amount of space to store <f_name>.<uid>
+    ret_label = (char *)malloc((strlen(f_name) + 10) * sizeof(char));
+
+    // create return address label: <f_name>.<uid>
+    strcpy(ret_label, f_name);
+    i = strlen(f_name);
+    ret_label[i++] = '.';
+    sprintf(ret_label + i, "%zu", uid);
+
+    // push return-address
+    if (write_pushpop(C_PUSH, S_CONSTANT, ret_label, fp) != 0) {
+        return 1;
+    }
+
+    // push LCL
+    fputs("@LCL\n", fp);
+    fputs("D=M\n", fp);
+    fputs(PUSH, fp);
+
+    // push ARG
+    fputs("@ARG\n", fp);
+    fputs("D=M\n", fp);
+    fputs(PUSH, fp);
+
+    // push THIS
+    fputs("@THIS\n", fp);
+    fputs("D=M\n", fp);
+    fputs(PUSH, fp);
+
+    // push THAT
+    fputs("@THAT\n", fp);
+    fputs("D=M\n", fp);
+    fputs(PUSH, fp);
+
+    // ARG = SP - n - 5
+    fputs("@SP\n", fp);
+    fputs("D=M\n", fp);
+    fputs("@5\n", fp);
+    fputs("D=D-A\n", fp);
+    fprintf(fp, "@%s\n", n_args);
+    fputs("D=D-A\n", fp);
+    fputs("@ARG\n", fp);
+    fputs("M=D\n", fp);
+
+    // LCL = SP
+    fputs("@SP\n", fp);
+    fputs("D=M\n", fp);
+    fputs("@LCL\n", fp);
+    fputs("M=D\n", fp);
+
+    // goto f
+    if (write_goto(f_name, fp) != 0 ) {
+        return 2;
+    }
+
+    // (return-address)
+    if (write_label(ret_label, fp) != 0) {
+        return 3;
+    }
+
+    free(ret_label);
+    return 0;
+}
+
+int write_return(FILE *fp) {
+
+    // FRAME = LCL
+    fputs("@LCL\n", fp);
+    fputs("D=M\n", fp);
+    fputs("@FRAME\n", fp);
+    fputs("M=D\n", fp);
+
+    // RET = *(FRAME-5)
+    fputs("@5\n", fp);
+    fputs("A=D-A", fp); 
+    fputs("D=M\n", fp);
+    fputs("@RET\n", fp);
+    fputs("M=D\n", fp);
+
+    // *ARG = pop()
+    fputs("@SP\n", fp);
+    fputs("M=M-1\n", fp);
+    fputs("A=M\n", fp);
+    fputs("D=M\n", fp);
+    fputs("@ARG\n", fp);
+    fputs("A=M\n", fp);
+    fputs("M=D\n", fp);
+    fputs("@ARG\n", fp);
+    fputs("D=M\n", fp);
+
+    // SP = ARG+1
+    fputs("@SP\n", fp);
+    fputs("M=D+1\n", fp);
+
+    // THAT = *(FRAME-1)
+    fputs("@FRAME\n", fp);
+    fputs("D=M\n", fp);
+    fputs("@1\n", fp);
+    fputs("A=D-A\n", fp);
+    fputs("D=M\n", fp);
+    fputs("@THAT\n", fp);
+    fputs("M=D\n", fp);
+
+    // THIS = *(FRAME-2)
+    fputs("@FRAME\n\n", fp);
+    fputs("D=M\n", fp);
+    fputs("@2\n", fp);
+    fputs("A=D-A\n", fp);
+    fputs("D=M\n", fp);
+    fputs("@THIS\n", fp);
+    fputs("M=D\n", fp); 
+
+    // ARG = *(FRAME-3)
+    fputs("@FRAME\n\n", fp);
+    fputs("D=M\n", fp);
+    fputs("@3\n", fp);
+    fputs("A=D-A\n", fp);
+    fputs("D=M\n", fp);
+    fputs("@ARG\n", fp);
+    fputs("M=D\n", fp); 
+    
+    // LCL = *(FRAME-4)
+    fputs("@FRAME\n\n", fp);
+    fputs("D=M\n", fp);
+    fputs("@4\n", fp);
+    fputs("A=D-A\n", fp);
+    fputs("D=M\n", fp);
+    fputs("@LCL\n\n", fp);
+    fputs("M=D\n", fp); 
+
+    // goto RET
+    fputs("@RET\n", fp);
+    fputs("A=M\n", fp);
+    fputs("0;JMP\n", fp);
+
     return 0;
 }

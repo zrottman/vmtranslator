@@ -2,7 +2,6 @@
 #include "lookup.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 
 int writer_init(const char* asmfilename, FILE** fp);
 int writer_close(FILE* fp);
@@ -15,4 +14,5 @@ int write_label(char* label, FILE* fp);
 int write_if(char* label, FILE* fp);
 int write_goto(char* label, FILE* fp);
 int write_function(char* label, char* n_locals, FILE* fp);
-int write_call(char* f_name, char* n_args, FILE* fp);
+int write_call(char* f_name, char* n_args, size_t uid, FILE* fp);
+int write_return(FILE *fp);

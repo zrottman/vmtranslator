@@ -15,7 +15,6 @@ int parser_translate(const char* vmfile, FILE* fp_out) {
     int i=1; // for line number printing -- to delete
     while (fgets(line, sizeof(line), fp_in) != NULL) {
 
-
         // strip comments and trim leading/trailing space
         cleanline(line);
 
@@ -24,7 +23,6 @@ int parser_translate(const char* vmfile, FILE* fp_out) {
 
         // write vm line as comment
         write_comment(line, fp_out);
-        //printf("%2d: %s\n", i++, line);
 
         // parse line
         if (parse_line(line, fp_out) != 0) {
@@ -80,7 +78,7 @@ int parse_line(char *line, FILE* fp_out) {
     size_t        token_count;
     char*         token;
     char*         tokens[3];
-    static size_t uid = 0; // unique ID for labels/jumps, ideally would reset to 0 for each .vm file
+    static size_t uid = 1; // unique ID for labels/jumps, ideally would reset to 0 for each .vm file, start at 1 because bootstrap uses 0
 
     // parse three tokens
     token_count = 0;
@@ -142,15 +140,18 @@ int parse_line(char *line, FILE* fp_out) {
             }
             break;
         case C_CALL:
-            printf("%2zu: call\n", line_num);
-            // write_call(tokens[1], tokens[2]);
+            if (write_call(tokens[1], tokens[2], uid++, fp_out) != 0) {
+                // error
+                return 8;
+            }
             break;
         case C_RETURN:
-            printf("%2zu: return\n", line_num);
-            // write_return();
+            if (write_return(fp_out) != 0) {
+                return 9;
+            }
             break;
         case C_UNKNOWN:
-            printf("%2zu: unknown\n", line_num);
+            return 10;
             break;
     }
 
