@@ -19,10 +19,12 @@ int writer_init(const char* asmfilename, FILE** fp) {
     }
 
     // write bootstrap
+    /*
     if (write_bootstrap(*fp) != 0) {
         writer_close(*fp);
         return 2;
     }
+    */
     return 0;
 }
 
@@ -67,7 +69,7 @@ int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* f
             switch (command) {
                 case C_PUSH:
                     fputs("A=D+M\n", fp);
-                    fputs("D+M\n", fp);
+                    fputs("D=M\n", fp);
                     fputs(PUSH, fp);
                     break;
                 case C_POP:
@@ -87,7 +89,7 @@ int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* f
             switch (command) {
                 case C_PUSH:
                     fputs("A=D+A\n", fp);
-                    fputs("D+M\n", fp);
+                    fputs("D=M\n", fp);
                     fputs(PUSH, fp);
                     break;
                 case C_POP:
@@ -161,7 +163,7 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
                     fputs("M=D+M\n", fp);
                     break;
                 case C_SUB:
-                    fputs("M=D-M\n", fp);
+                    fputs("M=M-D\n", fp);
                     break;
                 case C_AND:
                     fputs("M=D&M\n", fp);
@@ -330,7 +332,7 @@ int write_return(FILE *fp) {
 
     // RET = *(FRAME-5)
     fputs("@5\n", fp);
-    fputs("A=D-A", fp); 
+    fputs("A=D-A\n", fp); 
     fputs("D=M\n", fp);
     fputs("@RET\n", fp);
     fputs("M=D\n", fp);
@@ -360,7 +362,7 @@ int write_return(FILE *fp) {
     fputs("M=D\n", fp);
 
     // THIS = *(FRAME-2)
-    fputs("@FRAME\n\n", fp);
+    fputs("@FRAME\n", fp);
     fputs("D=M\n", fp);
     fputs("@2\n", fp);
     fputs("A=D-A\n", fp);
