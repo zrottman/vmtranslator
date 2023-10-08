@@ -1,9 +1,17 @@
 #include "parser.h"
 
 int parser_translate(const char* vmfile, FILE* fp_out) {
+    // TODO: For static, I think I'll need to pass a file_id (i.e., vm filename)
+    // to parse line, which in turn passes it to write_pushpop, so it can be
+    // incorporated into push/pop for static variables. To do that, I'll need to 
+    // create a filename function that takes `vmfile` and does right search for 
+    // slash
 
     FILE* fp_in;
     char  line[128];
+    
+    // get unique file id for statics
+    char* file_id = rfind(vmfile, '/');
 
     // open file
     fp_in = fopen(vmfile, "r");
@@ -25,7 +33,7 @@ int parser_translate(const char* vmfile, FILE* fp_out) {
         write_comment(line, fp_out);
 
         // parse line
-        if (parse_line(line, fp_out) != 0) {
+        if (parse_line(line, file_id + 1, fp_out) != 0) { // TODO fix hackiness with file_id
             printf("Error parsing line `%s` from file `%s`\n", line, vmfile);
             fclose(fp_in);
             return 1;
@@ -72,7 +80,7 @@ void trim(char* line) {
     line[++j] = '\0';
 }
 
-int parse_line(char *line, FILE* fp_out) {
+int parse_line(char *line, char* file_id, FILE* fp_out) {
 
     static size_t line_num = 1;
     size_t        token_count;
@@ -90,13 +98,13 @@ int parse_line(char *line, FILE* fp_out) {
 
     switch (lookup_vm_command(tokens[0])) {
         case C_PUSH:
-            if (write_pushpop(C_PUSH, lookup_vm_segment(tokens[1]), tokens[2], fp_out) != 0) {
+            if (write_pushpop(C_PUSH, lookup_vm_segment(tokens[1]), tokens[2], file_id, fp_out) != 0) {
                 // error;
                 return 1;
             }
             break;
         case C_POP:
-            if (write_pushpop(C_POP, lookup_vm_segment(tokens[1]), tokens[2], fp_out) != 0) {
+            if (write_pushpop(C_POP, lookup_vm_segment(tokens[1]), tokens[2], file_id, fp_out) != 0) {
                 // error;
                 return 2;
             }
@@ -134,13 +142,13 @@ int parse_line(char *line, FILE* fp_out) {
             }
             break;
         case C_FUNCTION:
-            if (write_function(tokens[1], tokens[2], fp_out) != 0) {
+            if (write_function(tokens[1], tokens[2], file_id, fp_out) != 0) {
                 // error
                 return 7;
             }
             break;
         case C_CALL:
-            if (write_call(tokens[1], tokens[2], uid++, fp_out) != 0) {
+            if (write_call(tokens[1], tokens[2], uid++, file_id, fp_out) != 0) {
                 // error
                 return 8;
             }

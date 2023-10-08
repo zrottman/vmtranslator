@@ -19,12 +19,10 @@ int writer_init(const char* asmfilename, FILE** fp) {
     }
 
     // write bootstrap
-    /*
     if (write_bootstrap(*fp) != 0) {
         writer_close(*fp);
         return 2;
     }
-    */
     return 0;
 }
 
@@ -50,13 +48,13 @@ int write_bootstrap(FILE *fp) {
     fputs("D=A\n", fp);
     fputs("@SP\n", fp);
     fputs("M=D\n", fp);
-    if (write_call("Sys.init", "0", 0, fp) != 0) {
+    if (write_call("Sys.init", "0", 0, "Bootstrap", fp) != 0) {
         return 2;
     }
     return 0;
 }
 
-int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* fp) {
+int write_pushpop(enum Command command, enum Segment segment, char* idx, char* file_id, FILE* fp) {
     switch (segment) {
 
         case S_LOCAL:
@@ -102,7 +100,9 @@ int write_pushpop(enum Command command, enum Segment segment, char* idx, FILE* f
             }
             break;
         case S_STATIC:
-            fprintf(fp, "%s\n", (lookup_seg_type(segment)));
+            // TODO: need first line to be @<filename>.<idx>; no need for lookup func
+            fprintf(fp, "@%s.%s\n", file_id, idx);
+            //fprintf(fp, "%s\n", (lookup_seg_type(segment)));
             switch (command) {
                 case C_PUSH:
                     fputs("D=M\n", fp);
@@ -240,21 +240,21 @@ int write_goto(char* label, FILE* fp) {
     return 0;
 }
 
-int write_function(char* label, char* n_locals, FILE* fp) {
+int write_function(char* label, char* n_locals, char* file_id, FILE* fp) {
     int n;
     if (write_label(label, fp) != 0) {
         return 1;
     }
     n = atoi(n_locals);
     for (int i=0; i<n; ++i) {
-        if (write_pushpop(C_PUSH, S_CONSTANT, "0", fp) != 0) {
+        if (write_pushpop(C_PUSH, S_CONSTANT, "0", file_id, fp) != 0) {
             return 2;
         }
     }
     return 0;
 }
 
-int write_call(char* f_name, char* n_args, size_t uid, FILE* fp) {
+int write_call(char* f_name, char* n_args, size_t uid, char* file_id, FILE* fp) {
     char *ret_label;
     int i;
     
@@ -268,7 +268,7 @@ int write_call(char* f_name, char* n_args, size_t uid, FILE* fp) {
     sprintf(ret_label + i, "%zu", uid);
 
     // push return-address
-    if (write_pushpop(C_PUSH, S_CONSTANT, ret_label, fp) != 0) {
+    if (write_pushpop(C_PUSH, S_CONSTANT, ret_label, file_id, fp) != 0) {
         return 1;
     }
 
