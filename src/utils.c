@@ -1,3 +1,5 @@
+#include "utils.h"
+
 // Function:    rfind
 // Description: Home-rolled version of strrchr(). Searches for last
 //              occurrence of `target` in string `s` and returns a
@@ -5,16 +7,19 @@
 // Arguments:   s      : input string
 //              target : target char
 // Returns:     Pointer to last location in `s` of `target`
-char* rfind(char* s, char target) {
-    // TODO: if `target` not found, does this return NULL? or s?
-    char *p = 0;
+char* rfind(const char* s, char target) {
+    if (s == NULL) {
+        return NULL;
+    }
 
-    while (target != 0 && s != 0 && *s != '\0') {
-        if (*s == target) { p = s; }
+    char *last_occurrence = NULL;
+
+    while (*s != '\0') {
+        if (*s == target) { last_occurrence = (char *)s; }
         s++;
     }
 
-    return p;
+    return last_occurrence;
 }
 
 // Function:    mystrcmp
@@ -44,14 +49,32 @@ int mystrcmp(const char* s1, const char* s2) {
     return 0;
 }
 
-char* fileid(const char* filepath) {
-    // TODO: if rfind returns NULL when not found, then handle that
-    char* filename;
-    char* p;
+// Function:    get_fileid
+// Description: Extracts filename (excluding extension) from path. Function
+//              dynamically allocates memory for output string; caller responsible
+//              for freeing returned char*.
+// Arguments:   filepath : filename, e.g. path/to/myfile.ext
+// Returns:     Pointer to dynamically-allocated fileid string 
+char* get_fileid(const char* filepath) {
+    if (filepath == NULL) {
+        return NULL;
+    }
 
-    filename = rfind(filepath, '/');
-    p = rfind(filename, '.');
-    *p = 0;
+    char* last_slash = rfind(filepath, '/');
 
-    return filename;
+    if (last_slash) {
+        last_slash++;
+    } else {
+        last_slash = (char *)filepath;
+    }
+
+    char *last_dot = rfind(last_slash, '.');
+
+    size_t len = last_dot ? (size_t)(last_dot - last_slash) : strlen(last_slash);
+
+    char* result = (char *)malloc(len + 1);
+    strncpy(result, last_slash, len);
+    result[len] = '\0';
+
+    return result;
 }
