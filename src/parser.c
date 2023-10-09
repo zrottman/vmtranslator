@@ -11,7 +11,7 @@ int parser_translate(const char* vmfile, FILE* fp_out) {
     char  line[128];
     
     // get unique file id for statics
-    char* file_id = rfind(vmfile, '/');
+    char* file_id = get_fileid(vmfile);
 
     // open file
     fp_in = fopen(vmfile, "r");
@@ -33,8 +33,9 @@ int parser_translate(const char* vmfile, FILE* fp_out) {
         write_comment(line, fp_out);
 
         // parse line
-        if (parse_line(line, file_id + 1, fp_out) != 0) { // TODO fix hackiness with file_id
+        if (parse_line(line, file_id, fp_out) != 0) { 
             printf("Error parsing line `%s` from file `%s`\n", line, vmfile);
+            free(file_id);
             fclose(fp_in);
             return 1;
         }
@@ -42,6 +43,9 @@ int parser_translate(const char* vmfile, FILE* fp_out) {
      
     // close file
     fclose(fp_in);
+
+    // free file_id
+    free(file_id);
 
     return 0;
 }
