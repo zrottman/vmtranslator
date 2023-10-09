@@ -58,6 +58,34 @@ void test_rfind_on_null_terminated_strings(void) {
     TEST_ASSERT_EQUAL_STRING("orld", rfind(str, 'o'));
 }
 
+void test_fileid(void) {
+    char* fileid;
+
+    fileid = get_fileid("path/to/myvmfile.vm");
+    TEST_ASSERT_EQUAL_STRING("myvmfile", fileid);
+    free(fileid);
+
+    fileid = get_fileid("myvmfile.vm");
+    TEST_ASSERT_EQUAL_STRING("myvmfile", fileid);
+    free(fileid);
+
+    fileid = get_fileid("myvmfile");
+    TEST_ASSERT_EQUAL_STRING("myvmfile", fileid);
+    free(fileid);
+
+    fileid = get_fileid("path/to/myvmfile");
+    TEST_ASSERT_EQUAL_STRING("myvmfile", fileid);
+    free(fileid);
+
+    fileid = get_fileid("path/to/myvmfile.a.b");
+    TEST_ASSERT_EQUAL_STRING("myvmfile.a", fileid);
+    free(fileid);
+
+    fileid = get_fileid(NULL);
+    TEST_ASSERT_EQUAL_STRING(NULL, fileid);
+    free(fileid);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -71,6 +99,8 @@ int main(void)
     RUN_TEST(test_rfind_on_empty_strings);
     RUN_TEST(test_rfind_on_repeated_chars);
     RUN_TEST(test_rfind_on_null_terminated_strings);
+
+    RUN_TEST(test_fileid);
 
     return UNITY_END();
 }
