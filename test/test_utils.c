@@ -58,6 +58,11 @@ void test_rfind_on_null_terminated_strings(void) {
     TEST_ASSERT_EQUAL_STRING("orld", rfind(str, 'o'));
 }
 
+void test_fileid(void) {
+    TEST_ASSERT_EQUAL_STRING("myvmfile", fileid("path/to/myvmfile.vm"));
+    TEST_ASSERT_EQUAL_STRING("myvmfile", fileid("myvmfile.vm"));
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -71,6 +76,8 @@ int main(void)
     RUN_TEST(test_rfind_on_empty_strings);
     RUN_TEST(test_rfind_on_repeated_chars);
     RUN_TEST(test_rfind_on_null_terminated_strings);
+
+    RUN_TEST(test_fileid);
 
     return UNITY_END();
 }

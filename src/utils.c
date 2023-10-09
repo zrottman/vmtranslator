@@ -6,6 +6,7 @@
 //              target : target char
 // Returns:     Pointer to last location in `s` of `target`
 char* rfind(char* s, char target) {
+    // TODO: if `target` not found, does this return NULL? or s?
     char *p = 0;
 
     while (target != 0 && s != 0 && *s != '\0') {
@@ -41,4 +42,16 @@ int mystrcmp(const char* s1, const char* s2) {
     }
 
     return 0;
+}
+
+char* fileid(const char* filepath) {
+    // TODO: if rfind returns NULL when not found, then handle that
+    char* filename;
+    char* p;
+
+    filename = rfind(filepath, '/');
+    p = rfind(filename, '.');
+    *p = 0;
+
+    return filename;
 }
