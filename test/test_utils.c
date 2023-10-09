@@ -59,8 +59,31 @@ void test_rfind_on_null_terminated_strings(void) {
 }
 
 void test_fileid(void) {
-    TEST_ASSERT_EQUAL_STRING("myvmfile", fileid("path/to/myvmfile.vm"));
-    TEST_ASSERT_EQUAL_STRING("myvmfile", fileid("myvmfile.vm"));
+    char* fileid;
+
+    fileid = get_fileid("path/to/myvmfile.vm");
+    TEST_ASSERT_EQUAL_STRING("myvmfile", fileid);
+    free(fileid);
+
+    fileid = get_fileid("myvmfile.vm");
+    TEST_ASSERT_EQUAL_STRING("myvmfile", fileid);
+    free(fileid);
+
+    fileid = get_fileid("myvmfile");
+    TEST_ASSERT_EQUAL_STRING("myvmfile", fileid);
+    free(fileid);
+
+    fileid = get_fileid("path/to/myvmfile");
+    TEST_ASSERT_EQUAL_STRING("myvmfile", fileid);
+    free(fileid);
+
+    fileid = get_fileid("path/to/myvmfile.a.b");
+    TEST_ASSERT_EQUAL_STRING("myvmfile.a", fileid);
+    free(fileid);
+
+    fileid = get_fileid(NULL);
+    TEST_ASSERT_EQUAL_STRING(NULL, fileid);
+    free(fileid);
 }
 
 int main(void)
