@@ -371,7 +371,7 @@ int write_return(FILE *fp) {
     fputs("M=D\n", fp); 
 
     // ARG = *(FRAME-3)
-    fputs("@FRAME\n\n", fp);
+    fputs("@FRAME\n", fp);
     fputs("D=M\n", fp);
     fputs("@3\n", fp);
     fputs("A=D-A\n", fp);
@@ -380,12 +380,12 @@ int write_return(FILE *fp) {
     fputs("M=D\n", fp); 
     
     // LCL = *(FRAME-4)
-    fputs("@FRAME\n\n", fp);
+    fputs("@FRAME\n", fp);
     fputs("D=M\n", fp);
     fputs("@4\n", fp);
     fputs("A=D-A\n", fp);
     fputs("D=M\n", fp);
-    fputs("@LCL\n\n", fp);
+    fputs("@LCL\n", fp);
     fputs("M=D\n", fp); 
 
     // goto RET
