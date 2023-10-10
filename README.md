@@ -2,6 +2,7 @@
 
 This is a C port of the [VM translator I build in Python](https://github.com/zrottman/nand2tetris/blob/main/projects/08/vmtranslator.py) for *The Elements of Computing Systems* (aka *Nand2tetris*). The VM translator serves as the middle layer between a high-end compiler front end and an [assembler back end](https://github.com/zrottman/assembler).
 
+![Demo](demo/demo.gif)
 
 ## Overview:
 Developed in the context of the nand2tetris computer, this VM translator bridges the gap between a high-level, Java-like source language (Jack) and a low-level target assembly language (Hack).
