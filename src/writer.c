@@ -8,7 +8,7 @@
 #define BINARY_LOAD UNARY_LOAD "D=M\n" UNARY_LOAD
 
 
-int writer_init(const char* asmfilename, FILE** fp) {
+int writer_init(const char* asmfilename, int nobootstrap, FILE** fp) {
     size_t len;
 
     printf("Write file: %s\n", asmfilename);
@@ -19,10 +19,11 @@ int writer_init(const char* asmfilename, FILE** fp) {
     }
 
     // write bootstrap
-    if (write_bootstrap(*fp) != 0) {
+    if (nobootstrap == 0 && write_bootstrap(*fp) != 0) {
         writer_close(*fp);
         return 2;
     }
+
     return 0;
 }
 

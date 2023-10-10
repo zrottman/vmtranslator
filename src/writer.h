@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int writer_init(const char* asmfilename, FILE** fp);
+int writer_init(const char* asmfilename, int nobootstrap, FILE** fp);
 int writer_close(FILE* fp);
 
 int write_comment(const char* line, FILE* fp);
