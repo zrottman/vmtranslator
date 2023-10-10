@@ -93,16 +93,16 @@ ASM_TARGETS = $(join $(addsuffix /, $(VM_PROJ_DIRS)), $(addsuffix .asm, $(notdir
 translate : $(ASM_TARGETS)
 
 vm/BasicLoop/BasicLoop.asm : vm/BasicLoop/BasicLoop.vm
-	-./$(PATHB)$(OUTFILE) $@ $^
+	-./$(PATHB)$(OUTFILE) -b $@ $^
 
 vm/StaticsTest/StaticsTest.asm : vm/StaticsTest/Class1.vm vm/StaticsTest/Class2.vm vm/StaticsTest/Sys.vm
 	-./$(PATHB)$(OUTFILE) $@ $^
 
 vm/SimpleFunction/SimpleFunction.asm : vm/SimpleFunction/SimpleFunction.vm
-	-./$(PATHB)$(OUTFILE) $@ $^
+	-./$(PATHB)$(OUTFILE) -b $@ $^
 
 vm/FibonacciSeries/FibonacciSeries.asm : vm/FibonacciSeries/FibonacciSeries.vm
-	-./$(PATHB)$(OUTFILE) $@ $^
+	-./$(PATHB)$(OUTFILE) -b $@ $^
 
 vm/FibonacciElement/FibonacciElement.asm : vm/FibonacciElement/Main.vm vm/FibonacciElement/Sys.vm
 	-./$(PATHB)$(OUTFILE) $@ $^

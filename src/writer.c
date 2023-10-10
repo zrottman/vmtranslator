@@ -7,8 +7,7 @@
 #define UNARY_LOAD  DEC "A=M\n"
 #define BINARY_LOAD UNARY_LOAD "D=M\n" UNARY_LOAD
 
-
-int writer_init(const char* asmfilename, FILE** fp) {
+int writer_init(const char* asmfilename, int nobootstrap, FILE** fp) {
     size_t len;
 
     printf("Write file: %s\n", asmfilename);
@@ -19,10 +18,11 @@ int writer_init(const char* asmfilename, FILE** fp) {
     }
 
     // write bootstrap
-    if (write_bootstrap(*fp) != 0) {
+    if (nobootstrap == 0 && write_bootstrap(*fp) != 0) {
         writer_close(*fp);
         return 2;
     }
+
     return 0;
 }
 
@@ -182,8 +182,7 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
         case C_LT:
             fputs(BINARY_LOAD, fp);
             fputs("D=D-M\n", fp);
-            //fprintf(fp, "@TRUE.%s$%s\n", ); // file id and counter
-            fprintf(fp, "@TRUE.%zu\n", uid); // file id also required if UID is reset to 0 each time parser_translate is called
+            fprintf(fp, "@TRUE.%zu\n", uid);
             switch (command) {
                 case C_EQ:
                     fputs("D;JEQ\n", fp);
@@ -199,14 +198,11 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
                     break;
             }
             fputs("D=0\n", fp);
-            //fprintf(fp, "@ENDIF.%s$%s\n", ); // file id and counter
-            fprintf(fp, "@ENDIF.%zu\n", uid); // file id also required if UID is reset to 0 each time parser_translate is called
+            fprintf(fp, "@ENDIF.%zu\n", uid);
             fputs("0;JMP\n", fp);
-            //fprintf(fp, "(TRUE.%s$%s)\n", ); // file id and counter
-            fprintf(fp, "(TRUE.%zu)\n", uid); // file id also required if UID is reset to 0 each time parser_translate is called
+            fprintf(fp, "(TRUE.%zu)\n", uid);
             fputs("D=-1\n", fp);
-            //fprintf(fp, "(ENDIF.%s$%s)\n", ); // file id and counter
-            fprintf(fp, "(ENDIF.%zu)\n", uid); // file id also required if UID is reset to 0 each time parser_translate is called
+            fprintf(fp, "(ENDIF.%zu)\n", uid);
             fputs("@SP\n", fp);
             fputs("A=M\n", fp);
             fputs("M=D\n", fp);
@@ -220,7 +216,6 @@ int write_arithmetic(enum Command command, size_t uid, FILE* fp) {
 }
 
 int write_label(char* label, FILE* fp) {
-    // is this correct? Do I need to disambuguate the label, for instance with the counter?
     fprintf(fp, "(%s)\n", label);
     return 0;
 }
