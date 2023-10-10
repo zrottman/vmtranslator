@@ -1,11 +1,6 @@
 #include "parser.h"
 
 int parser_translate(const char* vmfile, FILE* fp_out) {
-    // TODO: For static, I think I'll need to pass a file_id (i.e., vm filename)
-    // to parse line, which in turn passes it to write_pushpop, so it can be
-    // incorporated into push/pop for static variables. To do that, I'll need to 
-    // create a filename function that takes `vmfile` and does right search for 
-    // slash
 
     FILE* fp_in;
     char  line[128];
