@@ -17,6 +17,8 @@ enum Command {
     C_FUNCTION, C_RETURN, C_CALL, C_UNKNOWN
 };
 
+enum SearchOn { VM_TOK, ASM_TOK, COM_OR_SEG };
+
 union ComOrSeg {
     enum Segment s_type;
     enum Command c_type;
@@ -29,25 +31,11 @@ struct ArgMap {
     const char*    asm_token;
 };
 
-enum SearchOn { VM_TOK, ASM_TOK, COM_OR_SEG };
-
-/*
- * commands:
- *  arithmetic: add sub neg eq gt lt and or not
- *  push
- *  pop
- *  label: 
- *  goto: goto
- *  if: if-goto
- *  function
- *  return
- *
- */
 
 struct ArgMap lookup(struct ArgMap target, struct ArgMap *source, enum SearchOn search_on);
 
-enum Command lookup_vm_command(char* token);
-enum Segment lookup_vm_segment(char* token);
-const char*  lookup_seg_type(enum Segment seg_type);
+enum Command  lookup_vm_command(char* token);
+enum Segment  lookup_vm_segment(char* token);
+const char*   lookup_seg_type(enum Segment seg_type);
 
 #endif // LOOKUP_H
