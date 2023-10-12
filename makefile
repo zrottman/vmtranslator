@@ -18,7 +18,6 @@ SRC = $(wildcard $(PATHS)*.c)  # src/main.c src/parser.c ...
 SRCT = $(wildcard $(PATHT)*.c) # test/test_utils.c test/test_parser.c ...
 
 OBJS = $(patsubst $(PATHS)%.c, $(PATHO)%.o, $(SRC))  # build/objs/main.o build/objs/utils.o ...
-#OBJT = $(patsubst $(PATHT)%.c, $(PATHO)%.o, $(SRCT)) # build/objs/test_utils.o build/objs/test_parser.o ...
 TESTS = $(patsubst $(PATHT)%.c, $(PATHB)%, $(SRCT))  # build/test_utils build/test_parser ...
 MAIN = $(PATHO)main.o
 
@@ -72,25 +71,9 @@ VM_DIR_CONTENTS = $(shell find $(VM_DIR) -maxdepth 1 -type d) # vm vm/BasicLoop 
 VM_PROJ_DIRS = $(filter-out $(VM_DIR), $(VM_DIR_CONTENTS)) # vm/BasicLoop vm/FibonacciElements ...
 ASM_TARGETS = $(join $(addsuffix /, $(VM_PROJ_DIRS)), $(addsuffix .asm, $(notdir $(VM_PROJ_DIRS))))
 
-#VM_PROJ_PATH = $(addsuffix /, $(filter-out $(VM_DIR), $(VM_DIR_CONTENTS)))  # vm/BasicLoop/ vm/FibonacciElements/ ...
-#ASM_TARGETS = $(addsuffix /out.asm, $(VM_PROJ_DIRS))
-#PROJS = $(notdir $(VM_PROJ_DIRS))
-#ASM_TARGETS = $(patsubst %/, %/$(notdir %).asm, $(dir $(wildcard vm/*/)))
-
-
-#define generate_asm =
-#$(1) : $(wildcard $(dir $(1))*.vm)
-#endef
-
-#VM_FILES = $(foreach asm_target, $(ASM_TARGETS), $(wildcard $(dir $(asm_target))*.vm))
-#$(foreach asm_target, $(ASM_TARGETS), $(eval $(call generate_asm, $(asm_target))))
-
-#get_vm_files = $(shell find vm/$(1) -type f -maxdepth 1 -name *.vm)
-
-#$(ASM_TARGETS) :
-	#@echo "$@ -> $^\n"
 
 translate : $(ASM_TARGETS)
+
 
 vm/BasicLoop/BasicLoop.asm : vm/BasicLoop/BasicLoop.vm
 	-./$(PATHB)$(OUTFILE) -b $@ $^
